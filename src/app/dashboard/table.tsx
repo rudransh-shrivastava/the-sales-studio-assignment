@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -17,14 +18,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Coupon } from "./types";
 import { CreateDialog } from "./dialog";
+import { useState } from "react";
 
 interface DashboardTableProps {
   data: Coupon[];
 }
 
 export function DashboardTable({ data }: DashboardTableProps) {
-  // This state could be used later to control the dialog box
-  // const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const [coupons, setCoupons] = useState<Coupon[]>(data);
 
   return (
     <Table className="min-w-full bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden">
@@ -57,7 +58,7 @@ export function DashboardTable({ data }: DashboardTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((coupon, index) => (
+        {coupons.map((coupon, index) => (
           <TableRow
             key={coupon.id}
             className={`border-t ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
@@ -97,7 +98,7 @@ export function DashboardTable({ data }: DashboardTableProps) {
           </TableRow>
         ))}
         <div className="flex justify-end p-4">
-          <CreateDialog />
+          <CreateDialog data={coupons} setParentData={setCoupons} />
         </div>
       </TableBody>
     </Table>

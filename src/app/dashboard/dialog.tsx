@@ -15,7 +15,13 @@ import { Button } from "@/components/ui/button";
 import { Coupon } from "./types";
 import { useState } from "react";
 
-export function CreateDialog() {
+export function CreateDialog({
+  data,
+  setParentData, // this is a useState set function
+}: {
+  data: Coupon[];
+  setParentData: (data: Coupon[]) => void;
+}) {
   const emptyCoupon: Coupon = {
     id: "",
     name: "",
@@ -25,6 +31,15 @@ export function CreateDialog() {
     claimedAt: "",
     createdAt: "",
     updatedAt: "",
+    ClaimHistory: [
+      {
+        id: "",
+        ipAddress: "",
+        browserSessionId: "",
+        createdAt: "",
+        couponId: "",
+      },
+    ],
   };
   const [dialogCoupon, setDialogCoupon] = useState<Coupon>(emptyCoupon);
   return (
@@ -49,9 +64,30 @@ export function CreateDialog() {
               }}
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="code" className="text-right">
+              Code
+            </Label>
+            <Input
+              id="code"
+              value={dialogCoupon.code}
+              className="col-span-3"
+              onChange={(e) => {
+                setDialogCoupon({ ...dialogCoupon, code: e.target.value });
+              }}
+            />
+          </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Add</Button>
+          <Button
+            type="submit"
+            onClick={() => {
+              console.log(dialogCoupon);
+              setParentData([...data, dialogCoupon]);
+            }}
+          >
+            Add
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

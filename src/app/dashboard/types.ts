@@ -7,6 +7,7 @@ export type Coupon = {
   claimedAt: string;
   createdAt: string;
   updatedAt: string;
+  // TODO: Change the claim history to not be an array
   ClaimHistory: [
     {
       id: string;
