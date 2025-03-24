@@ -1,11 +1,3 @@
-import { Button } from "@/components/ui/button";
-
 export default function Home() {
-  return (
-    <div>
-      {" "}
-      Hello WOrld
-      <Button>Click me</Button>
-    </div>
-  );
+  return <div>add a way to claim a coupon here</div>;
 }
