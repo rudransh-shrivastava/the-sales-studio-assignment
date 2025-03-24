@@ -1,4 +1,5 @@
-import { Coupon, columns } from "./columns";
+import { Coupon } from "./types";
+import { DashboardTable } from "./table";
 export default async function Page() {
   const coupons: Coupon[] = [
     {
@@ -41,6 +42,8 @@ export default async function Page() {
     },
   ];
   return (
-    <div className="container mx-auto py-10">{/* display table here */}</div>
+    <div className="container mx-auto py-10">
+      {<DashboardTable data={coupons} />}
+    </div>
   );
 }
