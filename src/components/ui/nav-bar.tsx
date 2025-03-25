@@ -27,7 +27,7 @@ export default function NavBar() {
         </Link>
       </h1>
       <nav>
-        {session.user.role === "ADMIN" ? (
+        {session?.user?.role === "ADMIN" ? (
           <Button
             onClick={() => {
               redirect("/dashboard");
