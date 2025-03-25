@@ -19,6 +19,7 @@ export default function CouponClaim() {
   const mutation = useMutation({
     mutationFn: async (code: string) => {
       const response = await axios.post("/api/claim", { couponCode: code });
+      console.log(response.data);
       return response.data;
     },
     onSuccess: () => {
