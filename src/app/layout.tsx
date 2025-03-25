@@ -4,6 +4,7 @@ import "./globals.css";
 import { getSession } from "../../auth";
 import Providers from "./providers";
 import QueryProvider from "./query-provider";
+import NavBar from "@/components/ui/nav-bar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
+          <NavBar />
           <Providers session={session}>{children}</Providers>
         </QueryProvider>
       </body>
