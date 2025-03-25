@@ -54,19 +54,15 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(request: Request) {
   const session = await getSession();
   if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   try {
-    const { id } = params;
     const body = await request.json();
-    const { name, code } = body;
+    const { id, name, code } = body;
 
     if (!name || name == "") {
       return NextResponse.json({ error: "Name is required" }, { status: 400 });

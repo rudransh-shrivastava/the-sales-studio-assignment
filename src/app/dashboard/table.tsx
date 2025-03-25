@@ -38,9 +38,9 @@ export function DashboardTable() {
 
   const couponMutation = useMutation({
     mutationFn: async (coupon: Coupon) => {
-      if (coupon.id && !coupon.id.startsWith("coupon-")) {
+      if (coupon.id != "") {
         // Edit existing coupon via PUT
-        const response = await axios.put(`/api/coupons/${coupon.id}`, coupon);
+        const response = await axios.put(`/api/coupons`, coupon);
         return response.data;
       } else {
         // Add new coupon via POST

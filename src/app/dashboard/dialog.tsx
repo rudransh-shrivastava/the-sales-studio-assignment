@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Coupon, emptyCoupon } from "./types";
 import { useState, useEffect } from "react";
 
+// TODO: Add a Active (true, false) field
 export function CustomDialog({
   isDialogVisible,
   setIsDialogVisible,
@@ -41,7 +42,7 @@ export function CustomDialog({
         ? { ...dialogCoupon, updatedAt: new Date().toISOString() }
         : {
             ...dialogCoupon,
-            id: `coupon-${Date.now()}`,
+            id: "",
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           };
