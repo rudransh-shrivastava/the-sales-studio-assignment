@@ -17,8 +17,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Coupon } from "./types";
-import { CreateDialog } from "./dialog";
+import { CustomDialog } from "./dialog";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface DashboardTableProps {
   data: Coupon[];
@@ -26,7 +27,8 @@ interface DashboardTableProps {
 
 export function DashboardTable({ data }: DashboardTableProps) {
   const [coupons, setCoupons] = useState<Coupon[]>(data);
-
+  // const [selectedCoupon, setSelectedCoupon] = useState<Coupon>();
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
   return (
     <Table className="min-w-full bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden">
       <TableCaption className="text-sm text-gray-500">
@@ -44,13 +46,7 @@ export function DashboardTable({ data }: DashboardTableProps) {
             Code
           </TableHead>
           <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-            Claimed
-          </TableHead>
-          <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
             Active
-          </TableHead>
-          <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-            Claimed At
           </TableHead>
           <TableHead className="px-4 py-2 text-right text-sm font-medium text-gray-700">
             Actions
@@ -73,13 +69,7 @@ export function DashboardTable({ data }: DashboardTableProps) {
               {coupon.code}
             </TableCell>
             <TableCell className="px-4 py-2 text-gray-700">
-              {coupon.isClaimed ? "Yes" : "No"}
-            </TableCell>
-            <TableCell className="px-4 py-2 text-gray-700">
               {coupon.isActive ? "Yes" : "No"}
-            </TableCell>
-            <TableCell className="px-4 py-2 text-gray-700">
-              {coupon.claimedAt}
             </TableCell>
             <TableCell className="px-4 py-2 text-right">
               <DropdownMenu>
@@ -90,7 +80,16 @@ export function DashboardTable({ data }: DashboardTableProps) {
                 <DropdownMenuContent>
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      console.log("Edit Clicked");
+                      // set the selected coupon
+                      // but how do we get the selected coupon to set?
+                      // set the dialog visible true
+                    }}
+                  >
+                    Edit
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Claim History</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -98,7 +97,20 @@ export function DashboardTable({ data }: DashboardTableProps) {
           </TableRow>
         ))}
         <div className="flex justify-end p-4">
-          <CreateDialog data={coupons} setParentData={setCoupons} />
+          <Button
+            onClick={() => {
+              setIsDialogVisible(true);
+            }}
+          >
+            {" "}
+            Add{" "}
+          </Button>
+          <CustomDialog
+            data={coupons}
+            setData={setCoupons}
+            isDialogVisible={isDialogVisible}
+            setIsDialogVisible={setIsDialogVisible}
+          />
         </div>
       </TableBody>
     </Table>

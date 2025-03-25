@@ -6,9 +6,7 @@ export default async function Page() {
       id: "728ed52f",
       name: "Hello first coupon",
       code: "XYZ",
-      isClaimed: false,
       isActive: true,
-      claimedAt: "2022-01-01",
       createdAt: "2022-01-01",
       updatedAt: "2022-01-01",
       ClaimHistory: [
@@ -25,9 +23,7 @@ export default async function Page() {
       id: "489e1d42",
       name: "Hello second coupon",
       code: "XYZ",
-      isClaimed: false,
       isActive: true,
-      claimedAt: "2022-01-01",
       createdAt: "2022-01-01",
       updatedAt: "2022-01-01",
       ClaimHistory: [

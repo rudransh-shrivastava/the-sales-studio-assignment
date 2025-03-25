@@ -6,7 +6,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -15,20 +14,22 @@ import { Button } from "@/components/ui/button";
 import { Coupon } from "./types";
 import { useState } from "react";
 
-export function CreateDialog({
+export function CustomDialog({
   data,
-  setParentData, // this is a useState set function
+  setData,
+  isDialogVisible,
+  setIsDialogVisible,
 }: {
   data: Coupon[];
-  setParentData: (data: Coupon[]) => void;
+  setData: (data: Coupon[]) => void;
+  isDialogVisible: boolean;
+  setIsDialogVisible: (isVisible: boolean) => void;
 }) {
   const emptyCoupon: Coupon = {
     id: "",
     name: "",
     code: "",
     isActive: false,
-    isClaimed: false,
-    claimedAt: "",
     createdAt: "",
     updatedAt: "",
     ClaimHistory: [
@@ -43,8 +44,7 @@ export function CreateDialog({
   };
   const [dialogCoupon, setDialogCoupon] = useState<Coupon>(emptyCoupon);
   return (
-    <Dialog>
-      <DialogTrigger>Open</DialogTrigger>
+    <Dialog open={isDialogVisible} onOpenChange={setIsDialogVisible}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Coupon</DialogTitle>
@@ -82,8 +82,19 @@ export function CreateDialog({
           <Button
             type="submit"
             onClick={() => {
-              console.log(dialogCoupon);
-              setParentData([...data, dialogCoupon]);
+              const newCoupon = {
+                ...dialogCoupon,
+                id: `coupon-${Date.now()}`,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              };
+              setData([...data, dialogCoupon]);
+              // TODO: send the data using api
+              console.log("send new coupon to backend: ", newCoupon);
+              // init with empty coupon
+              setDialogCoupon(emptyCoupon);
+              // close
+              setIsDialogVisible(false);
             }}
           >
             Add
