@@ -1,17 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 
-// Type declaration for global prisma client
-declare global {
-  // eslint-disable-next-line no-var
-  var prisma: PrismaClient | undefined;
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    log: ["query"],
+  });
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+export async function disconnectPrisma() {
+  await prisma.$disconnect();
 }
-
-// Singleton function
-const prisma = globalThis.prisma || new PrismaClient();
-
-// Attach to global in development to prevent hot-reload issues
-if (process.env.NODE_ENV !== "production") {
-  globalThis.prisma = prisma;
-}
-
-export default prisma;
