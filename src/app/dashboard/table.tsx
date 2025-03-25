@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Coupon } from "./types";
+import { Coupon, emptyCoupon } from "./types";
 import { CustomDialog } from "./dialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,12 @@ export function DashboardTable({ data }: DashboardTableProps) {
   const [coupons, setCoupons] = useState<Coupon[]>(data);
   // const [selectedCoupon, setSelectedCoupon] = useState<Coupon>();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [editingCoupon, setEditingCoupon] = useState<Coupon>();
+
+  function handleEdit(coupon: Coupon) {
+    setEditingCoupon(coupon);
+    setIsDialogVisible(true);
+  }
   return (
     <Table className="min-w-full bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden">
       <TableCaption className="text-sm text-gray-500">
@@ -82,10 +88,7 @@ export function DashboardTable({ data }: DashboardTableProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => {
-                      console.log("Edit Clicked");
-                      // set the selected coupon
-                      // but how do we get the selected coupon to set?
-                      // set the dialog visible true
+                      handleEdit(coupon);
                     }}
                   >
                     Edit
@@ -100,6 +103,7 @@ export function DashboardTable({ data }: DashboardTableProps) {
           <Button
             onClick={() => {
               setIsDialogVisible(true);
+              setEditingCoupon(emptyCoupon);
             }}
           >
             {" "}
@@ -110,6 +114,7 @@ export function DashboardTable({ data }: DashboardTableProps) {
             setData={setCoupons}
             isDialogVisible={isDialogVisible}
             setIsDialogVisible={setIsDialogVisible}
+            editingCoupon={editingCoupon}
           />
         </div>
       </TableBody>
