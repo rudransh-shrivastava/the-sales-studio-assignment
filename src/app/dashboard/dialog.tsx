@@ -15,17 +15,15 @@ import { Coupon, emptyCoupon } from "./types";
 import { useState, useEffect } from "react";
 
 export function CustomDialog({
-  data,
-  setData,
   isDialogVisible,
   setIsDialogVisible,
   editingCoupon,
+  onSubmit,
 }: {
-  data: Coupon[];
-  setData: (data: Coupon[]) => void;
   isDialogVisible: boolean;
   setIsDialogVisible: (isVisible: boolean) => void;
   editingCoupon?: Coupon;
+  onSubmit: (coupon: Coupon) => void;
 }) {
   const [dialogCoupon, setDialogCoupon] = useState<Coupon>(emptyCoupon);
 
@@ -36,33 +34,20 @@ export function CustomDialog({
     }
   }, [editingCoupon, isDialogVisible]);
 
-  // TODO: send the data using api
   const handleSave = () => {
-    if (editingCoupon && editingCoupon.id !== "") {
-      // Edit existing coupon
-      console.log(dialogCoupon);
-      setData(
-        data.map((coupon) =>
-          coupon.id === editingCoupon.id
-            ? {
-                ...dialogCoupon,
-                updatedAt: new Date().toISOString(),
-              }
-            : coupon,
-        ),
-      );
-      setDialogCoupon(emptyCoupon);
-    } else {
-      // Add new coupon
-      const newCoupon = {
-        ...dialogCoupon,
-        id: `coupon-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      setData([...data, newCoupon]);
-    }
+    // Build the coupon object with proper timestamps.
+    const couponToSubmit =
+      editingCoupon && editingCoupon.id !== ""
+        ? { ...dialogCoupon, updatedAt: new Date().toISOString() }
+        : {
+            ...dialogCoupon,
+            id: `coupon-${Date.now()}`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
 
+    onSubmit(couponToSubmit);
+    setDialogCoupon(emptyCoupon);
     setIsDialogVisible(false);
   };
 
@@ -70,8 +55,17 @@ export function CustomDialog({
     <Dialog open={isDialogVisible} onOpenChange={setIsDialogVisible}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Coupon</DialogTitle>
-          <DialogDescription>Add a new Coupon and click Add</DialogDescription>
+          {" "}
+          <DialogTitle>
+            {editingCoupon && editingCoupon.id !== ""
+              ? "Edit Coupon"
+              : "Add Coupon"}
+          </DialogTitle>{" "}
+          <DialogDescription>
+            {editingCoupon && editingCoupon.id !== ""
+              ? "Edit the coupon details and click Save"
+              : "Add a new Coupon and click Add"}
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -108,7 +102,7 @@ export function CustomDialog({
               handleSave();
             }}
           >
-            Add
+            + {editingCoupon && editingCoupon.id !== "" ? "Save" : "Add"}
           </Button>
         </DialogFooter>
       </DialogContent>

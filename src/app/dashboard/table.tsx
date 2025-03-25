@@ -20,17 +20,39 @@ import { Coupon, emptyCoupon } from "./types";
 import { CustomDialog } from "./dialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
-interface DashboardTableProps {
-  data: Coupon[];
-}
-
-export function DashboardTable({ data }: DashboardTableProps) {
-  const [coupons, setCoupons] = useState<Coupon[]>(data);
-  // const [selectedCoupon, setSelectedCoupon] = useState<Coupon>();
+export function DashboardTable() {
+  const { data } = useQuery<Coupon[]>({
+    queryKey: ["coupons"],
+    queryFn: async () => {
+      const response = await axios.get("/api/coupons");
+      return response.data;
+    },
+  });
+  const coupons = data || [];
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon>();
+  const queryClient = useQueryClient();
 
+  const couponMutation = useMutation({
+    mutationFn: async (coupon: Coupon) => {
+      if (coupon.id && !coupon.id.startsWith("coupon-")) {
+        // Edit existing coupon via PUT
+        const response = await axios.put(`/api/coupons/${coupon.id}`, coupon);
+        return response.data;
+      } else {
+        // Add new coupon via POST
+        const response = await axios.post("/api/coupons", coupon);
+        return response.data;
+      }
+    },
+    onSuccess: () => {
+      // Invalidate and refetch coupons after a successful mutation
+      queryClient.invalidateQueries({ queryKey: ["coupons"] });
+    },
+  });
   function handleEdit(coupon: Coupon) {
     setEditingCoupon(coupon);
     setIsDialogVisible(true);
@@ -113,11 +135,12 @@ export function DashboardTable({ data }: DashboardTableProps) {
           Add{" "}
         </Button>
         <CustomDialog
-          data={coupons}
-          setData={setCoupons}
           isDialogVisible={isDialogVisible}
           setIsDialogVisible={setIsDialogVisible}
           editingCoupon={editingCoupon}
+          onSubmit={(coupon: Coupon) => {
+            couponMutation.mutate(coupon);
+          }}
         />
       </div>
     </div>
