@@ -1,6 +1,12 @@
 import { Coupon } from "./types";
 import { DashboardTable } from "./table";
+import { getSession } from "../../../auth";
+
 export default async function Page() {
+  const session = await getSession();
+  if (!session || session.user.role !== "ADMIN") {
+    return <div>Access denied</div>;
+  }
   const coupons: Coupon[] = [
     {
       id: "728ed52f",
