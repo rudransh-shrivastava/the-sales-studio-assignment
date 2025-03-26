@@ -89,3 +89,36 @@ export async function PUT(request: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  const session = await getSession();
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+  const id = new URL(req.url).searchParams.get("couponId");
+  if (!id) {
+    return NextResponse.json(
+      { error: "couponId is required" },
+      { status: 400 },
+    );
+  }
+  try {
+    // First, delete all claim history associated with the coupon
+    await prisma.claimHistory.deleteMany({
+      where: { couponId: id },
+    });
+
+    // Then delete the coupon itself
+    await prisma.coupon.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting coupon and claim history:", error);
+    return NextResponse.json(
+      { error: "Failed to delete coupon" },
+      { status: 500 },
+    );
+  }
+}

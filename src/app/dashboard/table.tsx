@@ -56,6 +56,18 @@ export function DashboardTable() {
     },
   });
 
+  // Delete Mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (couponId: string) => {
+      const response = await axios.delete(`/api/coupons?couponId=${couponId}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate and refetch coupons after successful deletion
+      queryClient.invalidateQueries({ queryKey: ["coupons"] });
+    },
+  });
+
   // History
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
   const [historyCouponId, setHistoryCouponId] = useState("");
@@ -88,6 +100,9 @@ export function DashboardTable() {
   function handleClaimHistory(couponId: string) {
     setHistoryCouponId(couponId);
     historyMutation.mutate();
+  }
+  function handleDelete(couponId: string) {
+    deleteMutation.mutate(couponId);
   }
   return (
     <div className="pl-4 pr-4">
@@ -154,6 +169,14 @@ export function DashboardTable() {
                       }}
                     >
                       Claim History
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-red-600 focus:bg-red-50 focus:text-red-900"
+                      onClick={() => {
+                        handleDelete(coupon.id);
+                      }}
+                    >
+                      Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
