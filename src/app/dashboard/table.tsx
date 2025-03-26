@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { HistoryDialog } from "./history-dialog";
+import { ClaimHistory } from "@prisma/client";
 
 export function DashboardTable() {
   const { data } = useQuery<Coupon[]>({
@@ -36,9 +37,6 @@ export function DashboardTable() {
   const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon>();
   const queryClient = useQueryClient();
-
-  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
-  const [historyCouponId, setHistoryCouponId] = useState("");
 
   const couponMutation = useMutation({
     mutationFn: async (coupon: Coupon) => {
@@ -57,6 +55,10 @@ export function DashboardTable() {
       queryClient.invalidateQueries({ queryKey: ["coupons"] });
     },
   });
+
+  // History
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+  const [historyCouponId, setHistoryCouponId] = useState("");
   const historyMutation = useMutation({
     mutationFn: async () => {},
     onSuccess: () => {
@@ -65,10 +67,27 @@ export function DashboardTable() {
       setIsHistoryDialogOpen(true);
     },
   });
+  const { data: historyData } = useQuery<ClaimHistory[]>({
+    queryKey: ["history", historyCouponId],
+    queryFn: async () => {
+      if (historyCouponId == "") {
+        return [];
+      }
+      const response = await axios.get(
+        `/api/history?couponId=${historyCouponId}`,
+      );
+      console.log(response.data);
+      return response.data;
+    },
+  });
 
   function handleEdit(coupon: Coupon) {
     setEditingCoupon(coupon);
     setIsCouponDialogOpen(true);
+  }
+  function handleClaimHistory(couponId: string) {
+    setHistoryCouponId(couponId);
+    historyMutation.mutate();
   }
   return (
     <div className="pl-4 pr-4">
@@ -131,8 +150,7 @@ export function DashboardTable() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => {
-                        setHistoryCouponId(coupon.id);
-                        historyMutation.mutate();
+                        handleClaimHistory(coupon.id);
                       }}
                     >
                       Claim History
@@ -162,9 +180,9 @@ export function DashboardTable() {
           }}
         />
         <HistoryDialog
+          data={historyData}
           isDialogVisible={isHistoryDialogOpen}
           setIsDialogVisible={setIsHistoryDialogOpen}
-          couponId={historyCouponId}
         />
       </div>
     </div>

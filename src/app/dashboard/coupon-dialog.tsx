@@ -95,6 +95,22 @@ export function CouponDialog({
               }}
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="active" className="text-right">
+              Active
+            </Label>
+            <Input
+              id="active"
+              value={dialogCoupon.isActive ? "Yes" : "No"}
+              className="col-span-3"
+              onChange={(e) => {
+                setDialogCoupon({
+                  ...dialogCoupon,
+                  isActive: e.target.value === "Yes" ? true : false,
+                });
+              }}
+            />
+          </div>
         </div>
         <DialogFooter>
           <Button
