@@ -37,9 +37,6 @@ export function HistoryDialog({
           <TableHeader className="bg-gray-100">
             <TableRow>
               <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                ID
-              </TableHead>
-              <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
                 IP
               </TableHead>
               <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
@@ -53,9 +50,6 @@ export function HistoryDialog({
                 key={data.id}
                 className={`border-t ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
               >
-                <TableCell className="px-4 py-2 font-medium text-gray-900">
-                  {data.id}
-                </TableCell>
                 <TableCell className="px-4 py-2 font-medium text-gray-900">
                   {data.ipAddress}
                 </TableCell>
