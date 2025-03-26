@@ -1,7 +1,6 @@
 "use client";
-
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,16 +9,9 @@ export default function CouponClaim() {
   const [couponCode, setCouponCode] = useState("");
   const [message, setMessage] = useState("");
 
-  const { isLoading } = useQuery({
-    queryKey: ["claim"],
-    queryFn: async () => {
-      return "Claim";
-    },
-  });
   const mutation = useMutation({
     mutationFn: async (code: string) => {
       const response = await axios.post("/api/claim", { couponCode: code });
-      console.log(response.data);
       return response.data;
     },
     onSuccess: () => {
@@ -48,9 +40,9 @@ export default function CouponClaim() {
       <Button
         onClick={handleClaim}
         className="text-white px-4 py-2 rounded-md w-full"
-        disabled={isLoading}
+        disabled={mutation.isPending}
       >
-        {isLoading ? "Claiming..." : "Claim"}
+        {mutation.isPending ? "Claiming..." : "Claim"}
       </Button>
       {message && <p className="mt-2 text-center">{message}</p>}
     </div>
