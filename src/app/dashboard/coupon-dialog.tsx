@@ -1,5 +1,11 @@
 "use client";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -99,17 +105,15 @@ export function CouponDialog({
             <Label htmlFor="active" className="text-right">
               Active
             </Label>
-            <Input
-              id="active"
-              value={dialogCoupon.isActive ? "Yes" : "No"}
-              className="col-span-3"
-              onChange={(e) => {
-                setDialogCoupon({
-                  ...dialogCoupon,
-                  isActive: e.target.value === "Yes" ? true : false,
-                });
-              }}
-            />
+            <Select value={dialogCoupon.isActive ? "Yes" : "No"}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Active" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Yes">Yes</SelectItem>
+                <SelectItem value="No">No</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <DialogFooter>
