@@ -113,9 +113,6 @@ export function DashboardTable() {
         <TableHeader className="bg-gray-100">
           <TableRow>
             <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-              ID
-            </TableHead>
-            <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
               Name
             </TableHead>
             <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-700">
@@ -135,9 +132,6 @@ export function DashboardTable() {
               key={coupon.id}
               className={`border-t ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
             >
-              <TableCell className="px-4 py-2 font-medium text-gray-900">
-                {coupon.id}
-              </TableCell>
               <TableCell className="px-4 py-2 text-gray-700">
                 {coupon.name}
               </TableCell>

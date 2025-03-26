@@ -62,7 +62,7 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, name, code } = body;
+    const { id, name, code, isActive } = body;
 
     if (!name || name == "") {
       return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -70,13 +70,13 @@ export async function PUT(request: Request) {
     if (!code || code == "") {
       return NextResponse.json({ error: "Code is required" }, { status: 400 });
     }
-
     // Update the coupon with the given id
     const updatedCoupon = await prisma.coupon.update({
       where: { id },
       data: {
         name,
         code,
+        isActive,
       },
     });
 

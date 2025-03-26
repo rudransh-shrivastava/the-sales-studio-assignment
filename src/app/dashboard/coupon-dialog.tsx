@@ -105,7 +105,15 @@ export function CouponDialog({
             <Label htmlFor="active" className="text-right">
               Active
             </Label>
-            <Select value={dialogCoupon.isActive ? "Yes" : "No"}>
+            <Select
+              value={dialogCoupon.isActive ? "Yes" : "No"}
+              onValueChange={(value) => {
+                setDialogCoupon({
+                  ...dialogCoupon,
+                  isActive: value === "Yes",
+                });
+              }}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Active" />
               </SelectTrigger>
