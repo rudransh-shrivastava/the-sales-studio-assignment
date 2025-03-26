@@ -15,7 +15,7 @@ import { Coupon, emptyCoupon } from "./types";
 import { useState, useEffect } from "react";
 
 // TODO: Add a Active (true, false) field
-export function CustomDialog({
+export function CouponDialog({
   isDialogVisible,
   setIsDialogVisible,
   editingCoupon,

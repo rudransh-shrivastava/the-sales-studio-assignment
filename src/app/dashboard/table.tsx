@@ -17,11 +17,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Coupon, emptyCoupon } from "./types";
-import { CustomDialog } from "./dialog";
+import { CouponDialog } from "./coupon-dialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { HistoryDialog } from "./history-dialog";
 
 export function DashboardTable() {
   const { data } = useQuery<Coupon[]>({
@@ -32,9 +33,12 @@ export function DashboardTable() {
     },
   });
   const coupons = data || [];
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon>();
   const queryClient = useQueryClient();
+
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+  const [historyCouponId, setHistoryCouponId] = useState("");
 
   const couponMutation = useMutation({
     mutationFn: async (coupon: Coupon) => {
@@ -53,9 +57,18 @@ export function DashboardTable() {
       queryClient.invalidateQueries({ queryKey: ["coupons"] });
     },
   });
+  const historyMutation = useMutation({
+    mutationFn: async () => {},
+    onSuccess: () => {
+      // Invalidate and refetch coupons after a successful mutation
+      queryClient.invalidateQueries({ queryKey: ["history"] });
+      setIsHistoryDialogOpen(true);
+    },
+  });
+
   function handleEdit(coupon: Coupon) {
     setEditingCoupon(coupon);
-    setIsDialogVisible(true);
+    setIsCouponDialogOpen(true);
   }
   return (
     <div className="pl-4 pr-4">
@@ -116,7 +129,14 @@ export function DashboardTable() {
                     >
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem>Claim History</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setHistoryCouponId(coupon.id);
+                        historyMutation.mutate();
+                      }}
+                    >
+                      Claim History
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -127,20 +147,24 @@ export function DashboardTable() {
       <div className="flex justify-end p-4">
         <Button
           onClick={() => {
-            setIsDialogVisible(true);
+            setIsCouponDialogOpen(true);
             setEditingCoupon(emptyCoupon);
           }}
         >
-          {" "}
-          Add{" "}
+          Add
         </Button>
-        <CustomDialog
-          isDialogVisible={isDialogVisible}
-          setIsDialogVisible={setIsDialogVisible}
+        <CouponDialog
+          isDialogVisible={isCouponDialogOpen}
+          setIsDialogVisible={setIsCouponDialogOpen}
           editingCoupon={editingCoupon}
           onSubmit={(coupon: Coupon) => {
             couponMutation.mutate(coupon);
           }}
+        />
+        <HistoryDialog
+          isDialogVisible={isHistoryDialogOpen}
+          setIsDialogVisible={setIsHistoryDialogOpen}
+          couponId={historyCouponId}
         />
       </div>
     </div>
